@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "800194997384",
+    "firebase_url": "https://raidcallapi.firebaseio.com",
+    "project_id": "raidcallapi",
+    "storage_bucket": "raidcallapi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800194997384:android:1bcd52204f9785a9",
+        "android_client_info": {
+          "package_name": "com.example.alex.raidcall"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800194997384-dafh2et959jegfauuqs1uk9bs7hnusro.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alex.raidcall",
+            "certificate_hash": "3bd633e395c88c841d18f8fb50243269f3b87ae3"
+          }
+        },
+        {
+          "client_id": "800194997384-pd8acf3hv4ke2rdm1k3f7nu9egfg8nsl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAFwZEggzVQYMHe_qIIPVvVFex4RUW_Ps"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800194997384-pd8acf3hv4ke2rdm1k3f7nu9egfg8nsl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+
+        android:background="@drawable/btn_background"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/MessageContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+
+
+            android:text="Here the content of the message will be displayed and to test if it looks proper I am gonna write a super long example message!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:id="@+id/MessageDate"
+            android:layout_width="171dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="TextView"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/cardview_light_background"/>
+
+
+        <TextView
+            android:id="@+id/MessageSender"
+            android:layout_width="171dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="Sender"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/cardview_light_background" />
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>
