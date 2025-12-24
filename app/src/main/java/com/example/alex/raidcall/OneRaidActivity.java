@@ -2,11 +2,11 @@ package com.example.alex.raidcall;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,15 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 public class OneRaidActivity extends AppCompatActivity {
 
@@ -49,20 +47,12 @@ public class OneRaidActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
        mNameList = (ListView) findViewById(R.id.Name_List);
 
+        FirebaseListOptions<String> options = new FirebaseListOptions.Builder<String>()
+                .setLayout(android.R.layout.simple_list_item_1)
+                .setQuery(mDatabaseJoin.child(Raid_ID), String.class)
+                .build();
 
-
-
-
-
-        FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(
-
-                this,
-                String.class,
-                android.R.layout.simple_list_item_1,
-                mDatabaseJoin.child(Raid_ID)
-
-
-        ) {
+        FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(options) {
             @Override
             protected void populateView(View v, String model, int position) {
 

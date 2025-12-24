@@ -1,8 +1,8 @@
 package com.example.alex.raidcall;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,24 +27,27 @@ public class ForgotAcitivity extends AppCompatActivity {
 
         FPEmail = (EditText) findViewById(R.id.FPEmail);
         FPsend = (Button) findViewById(R.id.FPsend);
+        mAuth = FirebaseAuth.getInstance();
 
         FPsend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Fmail = FPEmail.getText().toString().trim();
-
-
-                mAuth.getInstance().sendPasswordResetEmail(Fmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                String Fmail = FPEmail.getText().toString();
+                if (Fmail == null || Fmail.trim().length() == 0) {
+                    Toast.makeText(ForgotAcitivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                mAuth.sendPasswordResetEmail(Fmail).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                        if(task.isSuccessful()){
                            Toast.makeText(ForgotAcitivity.this, "Email sent", Toast.LENGTH_SHORT).show();
                            startActivity(new Intent(ForgotAcitivity.this, MainActivity.class ));
+                       } else {
+                           Toast.makeText(ForgotAcitivity.this, "Failed to send email", Toast.LENGTH_SHORT).show();
                        }
                     }
                 });
-
-
             }
         });
 

@@ -2,10 +2,10 @@ package com.example.alex.raidcall;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.IntentCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.IntentCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,7 +19,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -69,53 +68,57 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void startRegister() {
-        final String RegName = mRegNameField.getText().toString().trim();
-        String Password = mRegPasswordField.getText().toString().trim();
-        final String IGN = mRegIGNField.getText().toString().trim();
-        final String Email = mRegEmailField.getText().toString().trim();
+        final String RegName = mRegNameField.getText().toString();
+        String Password = mRegPasswordField.getText().toString();
+        final String IGN = mRegIGNField.getText().toString();
+        final String Email = mRegEmailField.getText().toString();
 
-        if(!TextUtils.isEmpty(RegName) && !TextUtils.isEmpty(Password) && !TextUtils.isEmpty(IGN) && !TextUtils.isEmpty(Email) && Password.length() > 5)
-        {
+        if(RegName == null || RegName.trim().length() == 0 ||
+           Password == null || Password.trim().length() == 0 ||
+           IGN == null || IGN.trim().length() == 0 ||
+           Email == null || Email.trim().length() == 0) {
+            Toast.makeText(RegisterActivity.this, "All fields are required.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(Password.trim().length() <= 5) {
+            Toast.makeText(RegisterActivity.this, "Password must be at least 6 characters.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mProgress.setMessage("Being registered...");
+        mProgress.show();
 
-            mProgress.setMessage("Being registered...");
-            mProgress.show();
-
-            mAuth.createUserWithEmailAndPassword(Email,Password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-
-                    if(task.isSuccessful()){
-
-                        String User_ID = mAuth.getCurrentUser().getUid();
-
-                        DatabaseReference current_user_id = mDatabase.child(User_ID);
-
-                        current_user_id.child("In game name").setValue(IGN);
-                        current_user_id.child("Name").setValue(RegName);
-                        current_user_id.child("Email").setValue(Email);
-                        mDatabase.child(mAuth.getCurrentUser().getUid()).child("pushToken").setValue(FirebaseInstanceId.getInstance().getToken().toString());
+        mAuth.createUserWithEmailAndPassword(Email,Password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
 
+                if(task.isSuccessful()){
 
-                        mProgress.dismiss();
+                    String User_ID = mAuth.getCurrentUser().getUid();
 
-                        Intent regraidIntent = new Intent(RegisterActivity.this, RaidActivity.class);
-                        regraidIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        regraidIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(regraidIntent);
-                        ActivityCompat.finishAffinity(RegisterActivity.this);
+                    DatabaseReference current_user_id = mDatabase.child(User_ID);
+
+                    current_user_id.child("In game name").setValue(IGN);
+                    current_user_id.child("Name").setValue(RegName);
+                    current_user_id.child("Email").setValue(Email);
 
 
 
+                    mProgress.dismiss();
 
-                    }
+                    Intent regraidIntent = new Intent(RegisterActivity.this, RaidActivity.class);
+                    regraidIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    regraidIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+                    startActivity(regraidIntent);
+                    ActivityCompat.finishAffinity(RegisterActivity.this);
+
+
+
 
                 }
-            });
 
-        } else{
-            Toast.makeText(RegisterActivity.this, "Something went wrong, is the password at least 5 characters long?", Toast.LENGTH_LONG).show();
-        }
+            }
+        });
+
     }
 }

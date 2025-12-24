@@ -1,19 +1,23 @@
 package com.example.alex.raidcall;
 
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,7 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.Timestamp;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -70,6 +73,10 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String newMSG = MsgField.getText().toString().trim();
+                if (TextUtils.isEmpty(newMSG)) {
+                    Toast.makeText(ChatActivity.this, "Message cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (ChatBundle != null)
                 {
                     final String Chat_Raid_ID = ChatBundle.getString("Chat_Raid_ID");
@@ -121,26 +128,31 @@ public class ChatActivity extends AppCompatActivity {
         super.onStart();
 
 
-        final FirebaseRecyclerAdapter<Chat, ChatMessageHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Chat, ChatMessageHolder>(
+        FirebaseRecyclerOptions<Chat> options = new FirebaseRecyclerOptions.Builder<Chat>()
+                .setQuery(mDatabasePerRaid, Chat.class)
+                .build();
 
-                Chat.class,
-                R.layout.message_layout,
-                ChatMessageHolder.class,
-                mDatabasePerRaid
+        FirebaseRecyclerAdapter<Chat, ChatMessageHolder> firebaseRecyclerAdapter =
+                new FirebaseRecyclerAdapter<Chat, ChatMessageHolder>(options) {
 
+                    @NonNull
+                    @Override
+                    public ChatMessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = getLayoutInflater().inflate(R.layout.message_layout, parent, false);
+                        return new ChatMessageHolder(view);
+                    }
 
+                    @Override
+                    protected void onBindViewHolder(@NonNull ChatMessageHolder viewHolder,
+                                                    int position,
+                                                    @NonNull Chat model) {
+                        viewHolder.setMessage(model.getMessage());
+                        viewHolder.setSender(model.getSender());
+                        viewHolder.setDate(model.getDate());
+                    }
+                };
 
-        ) {
-            @Override
-            protected void populateViewHolder(ChatMessageHolder viewHolder, Chat model, int position) {
-
-                viewHolder.setMessage(model.getMessage());
-                viewHolder.setSender(model.getSender());
-                viewHolder.setDate(model.getDate());
-
-            }
-        };
-
+        firebaseRecyclerAdapter.startListening();
         mChatList.setAdapter(firebaseRecyclerAdapter);
 
 
@@ -178,6 +190,3 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 }
-
-
-

@@ -1,20 +1,21 @@
 package com.example.alex.raidcall;
 
-
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +26,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Request;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -130,19 +130,21 @@ public class RaidActivity extends AppCompatActivity {
 
         mAuth.addAuthStateListener(mAuthListener);
 
-        FirebaseRecyclerAdapter<Raid,RaidViewHolder> FirebaseRecycleHandler = new FirebaseRecyclerAdapter<Raid, RaidViewHolder>(
+        FirebaseRecyclerOptions<Raid> options = new FirebaseRecyclerOptions.Builder<Raid>()
+                .setQuery(mDatabase, Raid.class)
+                .build();
 
-                Raid.class,
-                R.layout.raid_row,
-                RaidViewHolder.class,
-                mDatabase
+        FirebaseRecyclerAdapter<Raid,RaidViewHolder> FirebaseRecycleHandler = new FirebaseRecyclerAdapter<Raid, RaidViewHolder>(options) {
 
-
-        ) {
+            @NonNull
+            @Override
+            public RaidViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = getLayoutInflater().inflate(R.layout.raid_row, parent, false);
+                return new RaidViewHolder(view);
+            }
 
             @Override
-            protected void populateViewHolder(RaidViewHolder viewHolder, final Raid model, int position) {
-
+            protected void onBindViewHolder(@NonNull RaidViewHolder viewHolder, int position, @NonNull Raid model) {
                 final String Raid_Key = getRef(position).getKey();
 
                 viewHolder.setBoss(model.getBoss());
@@ -186,46 +188,46 @@ public class RaidActivity extends AppCompatActivity {
                         mProcessJoin = true;
 
 
-                            mDatabaseJoin.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (mProcessJoin) {
+                        mDatabaseJoin.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (mProcessJoin) {
 
-                                        if (dataSnapshot.child(Raid_Key).hasChild(mAuth.getCurrentUser().getUid())) {
-                                            Toast.makeText(RaidActivity.this, ("You already joined the raid."), Toast.LENGTH_SHORT).show();
-                                            mProcessJoin = false;
-
-
-                                        } else {
-                                            mDatabaseUser.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                   String UserValue =  dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("In game name").getValue().toString();
-                                                    mDatabaseJoin.child(Raid_Key).child(mAuth.getCurrentUser().getUid()).setValue(UserValue);
-
-                                                }
-
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-
-                                                }
-                                            });
+                                    if (dataSnapshot.child(Raid_Key).hasChild(mAuth.getCurrentUser().getUid())) {
+                                        Toast.makeText(RaidActivity.this, ("You already joined the raid."), Toast.LENGTH_SHORT).show();
+                                        mProcessJoin = false;
 
 
+                                    } else {
+                                        mDatabaseUser.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                String UserValue =  dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("In game name").getValue().toString();
+                                                mDatabaseJoin.child(Raid_Key).child(mAuth.getCurrentUser().getUid()).setValue(UserValue);
 
-                                            Toast.makeText(RaidActivity.this, ("You joined the raid."), Toast.LENGTH_SHORT).show();
-                                            mProcessJoin = false;
+                                            }
 
-                                        }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+
+
+                                        Toast.makeText(RaidActivity.this, ("You joined the raid."), Toast.LENGTH_SHORT).show();
+                                        mProcessJoin = false;
 
                                     }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                            });
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
 
 
 
@@ -236,6 +238,7 @@ public class RaidActivity extends AppCompatActivity {
             }
         };
 
+        FirebaseRecycleHandler.startListening();
         mRaidList.setAdapter(FirebaseRecycleHandler);
 
 

@@ -1,10 +1,9 @@
 package com.example.alex.raidcall;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.IntentCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,7 +18,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Intent SignIntent = new Intent(MainActivity.this, RaidActivity.class);
 
-                    SignIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                    SignIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(SignIntent);
                     ActivityCompat.finishAffinity(MainActivity.this);
 
@@ -121,20 +119,19 @@ public class MainActivity extends AppCompatActivity {
 
 
             private void startSignIn(){
-
                 String email = mEmailField.getText().toString();
                 String Password = mPasswordField.getText().toString();
 
                 if(TextUtils.isEmpty(email) || TextUtils.isEmpty(Password)){
                     Toast.makeText(MainActivity.this, "One or more of the fields was empty.", Toast.LENGTH_SHORT).show();
-                }else {
+                    return;
+                }
 
 
                     mAuth.signInWithEmailAndPassword(email, Password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                mDatabaseUsers.child(mAuth.getCurrentUser().getUid()).child("pushToken").setValue(FirebaseInstanceId.getInstance().getToken().toString());
                                 Toast.makeText(MainActivity.this, "Welcome, you are signed in", Toast.LENGTH_SHORT).show();
                             }else{
                                 Toast.makeText(MainActivity.this, "There was a sign in problem", Toast.LENGTH_LONG).show();
@@ -142,7 +139,5 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-
-    }
 
         };
