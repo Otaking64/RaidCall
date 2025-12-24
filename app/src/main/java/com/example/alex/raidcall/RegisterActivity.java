@@ -22,12 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
-
     private EditText mRegNameField;
     private EditText mRegEmailField;
     private EditText mRegIGNField;
     private EditText mRegPasswordField;
-
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -36,13 +34,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button mNewRegistryBtn;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
 
         mRegNameField =(EditText) findViewById(R.id.RegNameField);
         mRegEmailField =(EditText) findViewById(R.id.regEmailField);
@@ -59,12 +54,9 @@ public class RegisterActivity extends AppCompatActivity {
         mNewRegistryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 startRegister();
             }
         });
-
-
     }
 
     private void startRegister() {
@@ -91,18 +83,12 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
-
                 if(task.isSuccessful()){
-
                     String User_ID = mAuth.getCurrentUser().getUid();
-
                     DatabaseReference current_user_id = mDatabase.child(User_ID);
-
                     current_user_id.child("In game name").setValue(IGN);
                     current_user_id.child("Name").setValue(RegName);
                     current_user_id.child("Email").setValue(Email);
-
-
 
                     mProgress.dismiss();
 
@@ -111,14 +97,8 @@ public class RegisterActivity extends AppCompatActivity {
                     regraidIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                     startActivity(regraidIntent);
                     ActivityCompat.finishAffinity(RegisterActivity.this);
-
-
-
-
                 }
-
             }
         });
-
     }
 }

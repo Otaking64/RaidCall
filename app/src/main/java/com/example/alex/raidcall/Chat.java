@@ -5,13 +5,11 @@ package com.example.alex.raidcall;
  */
 
 public class Chat {
-
     private String Sender;
     private String Message;
     private String Date;
 
     public Chat(){
-
     }
 
     public Chat(String sender, String message, String date) {
@@ -19,8 +17,6 @@ public class Chat {
         Message = message;
         Date = date;
     }
-
-
 
     public String getSender() {
         return Sender;
@@ -30,13 +26,11 @@ public class Chat {
         Sender = sender;
     }
 
-
     public String getDate() {
         return Date;
     }
 
     public void setDate(String date) {Date = date;}
-
 
     public String getMessage() {
         return Message;
@@ -45,6 +39,4 @@ public class Chat {
     public void setMessage(String message) {
         Message = message;
     }
-
-
 }

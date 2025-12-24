@@ -15,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class AccountActivity extends AppCompatActivity {
 
-
     private Button mLogOutButton;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -35,20 +34,11 @@ public class AccountActivity extends AppCompatActivity {
         TextView EmailView = (TextView) findViewById(R.id.EmailView);
 
         Bundle accBundle = getIntent().getExtras();
-        if (accBundle != null)
-        {
+        if (accBundle != null) {
             nameView.setText("Name: "+accBundle.getString("bamName"));
             IGNView.setText("In game Name: "+accBundle.getString("bamIGN"));
             EmailView.setText("Email: "+accBundle.getString("bamEmail"));
-
-
         }
-
-
-
-
-
-
 
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -58,22 +48,14 @@ public class AccountActivity extends AppCompatActivity {
                 if (firebaseAuth.getCurrentUser() == null) {
 
                     startActivity(new Intent(AccountActivity.this, MainActivity.class));
-
-
                 }
-
-
             }
         };
-
-
 
         mLogOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logOut();
-
-
             }
         });
     }
@@ -86,8 +68,5 @@ public class AccountActivity extends AppCompatActivity {
         Intent MainIntent = new Intent(AccountActivity.this, MainActivity.class);
         MainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(MainIntent);
-
     }
-
-
 }

@@ -19,7 +19,6 @@ public class ForgotAcitivity extends AppCompatActivity {
     private EditText FPEmail;
     private Button FPsend;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +49,5 @@ public class ForgotAcitivity extends AppCompatActivity {
                 });
             }
         });
-
-
-
     }
 }
